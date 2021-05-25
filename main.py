@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 import json
 import time
+from extra import *
 
 with open("tokenfile", "r") as tokenfile: # defines the token so it knows how to get access to the bot
 	token=tokenfile.read()
@@ -18,13 +19,13 @@ async def add_coins(user, amount): # define the function to add coins to a user'
 		coinsraw.write(json.dumps(coins))
 
 intents = discord.Intents.all() # defines bot's intents
-client = commands.Bot(command_prefix='o!', intents=intents) # defines the client and prefix
+client = commands.Bot(command_prefix='o!', intents=intents, help_command=MyHelpCommand()) # defines the client and prefix
 
 @client.event
 async def on_ready():
 	print("hello world!") # tells the console when the bot is online
 
-@client.command(aliases=['c'])
+@client.command(aliases=['c'], brief="get 100 free Oni Coin:tm: only works once")
 async def claim(ctx): # the claim command that only works once
 	with open("coins.json", "r") as coinsraw:
 		coins = json.loads(coinsraw.read())
@@ -36,7 +37,7 @@ async def claim(ctx): # the claim command that only works once
 		await ctx.send("you got your first 100 Oni Coin:tm:! Congrats!")
 		await add_coins(user=ctx.author, amount=100)
 
-@client.command(aliases=['bal', 'balance', 'coin', 'amount', 'ch'])
+@client.command(aliases=['bal', 'balance', 'coin', 'amount', 'ch'], brief="Find how many Oni Coin:tm: you have")
 async def check(ctx): # see the amount of coin you have
 	with open("coins.json", "r") as coinsraw:
 		coins = json.loads(coinsraw.read())
